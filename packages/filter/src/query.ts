@@ -57,8 +57,8 @@ export type PredicateComparison<PT> = {
   nin?: PT[];
   between?: [PT, PT];
   exists?: boolean;
-  like?: PT;
-  nlike?: PT;
+  like?: PT & {options: 'i'};
+  nlike?: PT & {options: 'i'};
   ilike?: PT;
   nilike?: PT;
   regexp?: string | RegExp;
@@ -464,10 +464,12 @@ export class WhereBuilder<MT extends object = AnyObject> {
    * Add a `like` condition
    * @param key - Property name
    * @param val - Regexp condition
+   * @param options - i enables case insensitive flag for memory and MongoDB connectors
    */
-  like<K extends KeyOf<MT>>(key: K, val: MT[K]): this {
+  like<K extends KeyOf<MT>>(key: K, val: MT[K], options?: 'i'): this {
     const w: Where<MT> = {};
-    w[key] = {like: val};
+    const i = {options} || {};
+    w[key] = {...i, like: val};
     return this.add(w);
   }
 
@@ -475,10 +477,12 @@ export class WhereBuilder<MT extends object = AnyObject> {
    * Add a `nlike` condition
    * @param key - Property name
    * @param val - Regexp condition
+   * @param options - i enables case insensitive flag for memory and MongoDB connectors
    */
-  nlike<K extends KeyOf<MT>>(key: K, val: MT[K]): this {
+  nlike<K extends KeyOf<MT>>(key: K, val: MT[K], options?: 'i'): this {
     const w: Where<MT> = {};
-    w[key] = {nlike: val};
+    const i = {options} || {};
+    w[key] = {...i, nlike: val};
     return this.add(w);
   }
 
